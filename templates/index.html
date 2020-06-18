@@ -1,0 +1,407 @@
+{% load static %}
+<!DOCTYPE HTML>
+<style type="text/css">
+.container{
+    position: relative;
+}    
+
+.topright{
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+    font-size:18px;
+}
+
+ul,li {
+  list-style-type: none;
+}
+
+.img{
+    width: 100%;
+    height: auto;
+    opacity: 0.3;
+}
+button{
+	width:200px; 
+	line-height:50px;
+	border:none;
+	border-radius: 2px;
+}
+
+.buttonClass
+{
+
+}
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+
+input[type=text], select{
+  width: 100%;
+  padding: 1px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 2px;
+  margin-bottom: 1px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container1 {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+
+</style>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Dashboard - SB Admin</title>
+        <link href="{% static 'AutoGenerateML/css/styles.css'  %}" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+        <script src="{% static 'AutoGenerateML/js/scripts.js'  %}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <script>
+
+            var formId = 0;
+            var ulId = 0;
+            function DynamicDiv(dynDiv1) 
+            {       
+                var ulTag = document.createElement("ul");
+                ulTag.id = "ulId"+ulId++; 
+
+                var dynDivFinal = document.createElement("div");
+                dynDivFinal.id = "divDynaFinal";
+                dynDivFinal.style.float = "left";
+                
+                var dynDiv = document.createElement("li");
+                dynDiv.id = "divDyna";
+                dynDiv.style.height = "60px";
+                dynDiv.style.width = "200px";
+                dynDiv.style.margin = "50px";
+				dynDiv.style.borderRadius="12px";
+				dynDiv.style.backgroundColor = '#E6E6E6';	
+
+  /*            var dynDivForm = document.createElement("li");
+                let formFC = document.getElementById("myForm");
+                let cln = formFC.cloneNode(true);
+                cln.id ="formId"+formId++;
+                cln.style.display = "block";
+                dynDivForm.appendChild(cln);
+*/
+                ulTag.appendChild(dynDiv);
+//                ulTag.appendChild(dynDivForm);
+                dynDivFinal.appendChild(ulTag);
+                
+                dynDiv.ondrop=function(){drop(event)};
+				dynDiv.ondragover=function(){ondragover(event)};
+				dynDiv.ondragenter=function(){dragEnter(event)};
+                document.getElementById(dynDiv1).appendChild(dynDivFinal);
+        
+            }
+
+            var dragItem;
+
+            function ondragover(ev) 
+            {
+			
+				ev.dataTransfer.dropEffect = "copy";
+				ev.preventDefault();
+				ev.stopPropagation();
+            }
+
+			function ondragover2(ev) 
+            {
+				ev.dataTransfer.dropEffect = "copy";
+				ev.preventDefault();
+				ev.stopPropagation();
+            }
+
+            function drag(ev) 
+            {
+				dragItem=ev.target;
+                ev.dataTransfer.setData("text", ev.target.id);
+				ev.dataTransfer.effectAllowed = "copy";
+            }
+
+            var count=0;
+            var countName =0;
+           
+			function drop(ev) 
+            { 
+				if (ev.target.hasChildNodes()) 
+				{   
+					ev.target.removeChild(ev.target.firstChild);
+				}
+
+				var dg2=dragItem.cloneNode(true);
+				ev.dataTransfer.dropEffect = "copy";
+                dg2.id = "id"+count++;
+                dg2.name=countName++;
+				console.log("Hello this is id:",dg2.id);
+                var data = ev.dataTransfer.getData("text");
+				ev.target.appendChild(dg2);
+                ev.preventDefault();
+				ev.stopPropagation();
+
+
+
+                dg2.onclick = function()
+                {
+                    console.log("Hello this is name:",dg2.name);
+                    var getulTag = document.getElementById("ulId"+dg2.name);
+                    var dynDivForm = document.createElement("li");
+
+                    let divCreate = document.createElement("div");
+                    let formFC = document.getElementById("myForm");
+                    let cln = formFC.cloneNode(true);
+                    cln.id ="formId"+dg2.name;    
+                    cln.style.display = "block";
+                    divCreate.appendChild(cln);
+                    dynDivForm.appendChild(divCreate);
+                    getulTag.appendChild(dynDivForm);
+
+                }
+
+            }
+
+            function sendValuesToBack()
+            {
+                let j,
+                    i,
+                    arry1D = [];
+
+                for(j=0;j!=countName;j++)
+                {
+                    var inputs = document.getElementById("formId" + j).elements;
+                    if (!arry1D[j]) arry1D[j] = []
+                    arry1D[j][0] = "formId" + j;
+
+                    console.log("---------------Form--------------------");
+                    for (i = 0; i < inputs.length; i++) {
+                        if (inputs[i].nodeName === "INPUT" && inputs[i].type === "text") {
+                            console.log("values of form:", inputs[i].value);
+                            arry1D[j][i + 1] = inputs[i].value;
+                        }
+                    }
+
+                    $.post({
+                        url: "",
+                        data: arry1D,
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        success:function(result) {
+                            console.log(result);
+                        }
+                    });
+
+                }
+
+
+{% comment %}                $.ajax({
+                    url:'',
+                    type:'POST',
+                    data:arry1D,
+                    headers: { "X-CSRFToken": "{{ csrf_token }}" }, // for csrf token
+                    "success": function(result) {
+                        console.log(result);
+                    },
+                });{% endcomment %}
+                console.table(arry1D);
+            }
+
+        	function dragEnter(ev) 
+            {
+        		ev.dataTransfer.dropEffect = "copy";
+        		ev.preventDefault();
+        		ev.stopPropagation();
+        	}
+
+            function ondrag(event) 
+            {
+
+            }
+
+        	function dragEnd(event) {}
+        	function ondropdelete(ev) 
+            {
+        		ev.dataTransfer.dropEffect = "copy";
+        		dragItem.remove();				
+        		ev.preventDefault();
+        		ev.stopPropagation();
+            }
+
+            function openForm() 
+            {
+                document.getElementById("myForm").style.display = "block";            
+            }
+
+            function closeForm(ev) 
+            {
+                document.getElementById("formId"+dg2copy.name).style.display="none";
+            }
+
+        </script>
+
+    </head>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <a class="navbar-brand mr-md-10" href="index.html">Generate Machine Learning Models</a>
+            <button class="btn btn-link btn-sm order-1 order-lg-0 ml-md-5" id="sidebarToggle" href="#"><i class="fas fa-bars"></i>
+            	</button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ml-3 mr-0 mr-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+            <!-- Navbar-->
+            
+    </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav mt-5 pl-2">
+							<button id="fc" draggable="true" ondragstart="drag(event)"  ondragend="dragEnd(event)" class="bg-yellow text-white mb-2">
+								<div class="card-body">FC</div>
+							</button>
+							<button id="cnn" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)" class="bg-primary text-white mb-2" >
+								<div class="card-body">CNN</div>
+							</button>
+							<button id="rnn" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)" class="bg-yellow text-white mb-2" >
+								<div class="card-body">RNN</div>
+							</button>
+							<button id="lstm" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)" class="bg-primary text-white mb-2" >
+								<div class="card-body">LSTM</div>
+							</button>
+     						     					
+                        <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth"
+                                        >Authentication
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div
+                                    ></a>
+                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                        <nav class="sb-sidenav-menu-nested nav"><a class="nav-link" href="login.html">Login</a><a class="nav-link" href="register.html">Register</a><a class="nav-link" href="password.html">Forgot Password</a></nav>
+                                    </div>
+                                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError"
+                                        >Error
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div
+                                    ></a>
+                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                                        <nav class="sb-sidenav-menu-nested nav"><a class="nav-link" href="401.html">401 Page</a><a class="nav-link" href="404.html">404 Page</a><a class="nav-link" href="500.html">500 Page</a></nav>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        Name
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid">
+                        <div id='cssmenu'>
+                            <ul>
+                               <li class="active"><a href='#'>Platform</a></li>
+                               <li><a href='#'>Connection</a></li>
+                               <li><a href='#'>History</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+            
+            <!-- ----------------------------------------------------------------------------------------------------- -->
+
+            <div id="platform"  class="card mb-4 ml-4 mr-4" style="width:all;height:500px;border-style: solid;">
+			
+            	<div>
+					<input id="Button1" type="button" value="Add Section" onclick="DynamicDiv('addTable');" />    
+				</div>
+
+			     <div id = "addTable" class="dropDown">     
+                 </div>
+
+                 <div id = "addForm">
+                 </div>
+
+                {% csrf_token  %}
+                <form  id = "myForm" style="list-style-type: none;display: none;" class="form_class">
+                    item1:
+                    <input type="text" name="item1" style="width:10%;height:5%"> 
+                    <br>
+                    item2:
+                    <input type="text" name="item2" style="width:10%;height: 5%">
+                    <br>
+                    item2:
+                    <input type="text" name="item2" style="width:10%;height: 5%">
+                    <br>
+                    item2:
+                    <input type="text" name="item2" style="width:10%;height: 5%">
+                    <br>
+                    item2:
+                    <input type="text" name="item2" style="width:10%;height: 5%"> 
+                    
+                    <br><br> 
+                    <input id="close_form" type="reset" value="reset">
+                </form>      
+
+            </div> 
+
+            <!-- ----------------------------------------------------------------------------------------------------- -->
+
+
+                <div id="section1">
+					<div ondrop="ondropdelete(event)" ondragover="ondragover2(event)" ondragenter="dragEnter(event)" class="card-body ml-5" style="border-radius:12px;float:left;border-style:dashed;border-color:grey;color:grey;">Delete
+                    </div>
+                    <ol class="breadcrumb mb-3">     
+                        <li>
+                        <button class="bg-yellow text-white" >
+							
+                            <div class="card-body" type="button" onclick="sendValuesToBack()">Run
+                            </div>
+                        </button>
+                        </li>
+
+                        <a href="#">
+                                <img class="img" style="width:80px;height:80px;" src="{% static 'AutoGenerateML/assets/img/Setting.jpg'%}">
+                        </a>
+                    </ol>
+                </div>
+                </main>
+            </div>
+        </div>
+    </body>
+</HTML>
