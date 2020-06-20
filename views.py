@@ -15,15 +15,6 @@ def loginUser(request):
     context ={}
     return render(request,'login.html',context)
 
-
-# def lat_ajax(request):
-#     if request.method == "POST":
-#         array1D = request.POST.get('arry1D')
-#         return render_to_response(json.dumps(array1D), content_type="application/json")
-def lat_ajax(self, request, *args, **kwargs):
-    some_text = 'A reply'
-    return JsonResponse({'some_text': some_text})
-
 def hello(request):
     return HttpResponse('Hello World!')
 
