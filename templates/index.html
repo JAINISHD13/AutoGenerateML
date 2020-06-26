@@ -79,7 +79,6 @@ input[type=submit]:hover {
         <link href="{% static 'AutoGenerateML/css/styles.css'  %}" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-        <script src="{% static 'AutoGenerateML/js/scripts.js'  %}"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -126,7 +125,6 @@ input[type=submit]:hover {
 
             function ondragover(ev) 
             {
-			
 				ev.dataTransfer.dropEffect = "copy";
 				ev.preventDefault();
 				ev.stopPropagation();
@@ -166,8 +164,6 @@ input[type=submit]:hover {
                 ev.preventDefault();
 				ev.stopPropagation();
 
-
-
                 dg2.onclick = function()
                 {
                     console.log("Hello this is name:",dg2.name);
@@ -175,10 +171,62 @@ input[type=submit]:hover {
                     var dynDivForm = document.createElement("li");
 
                     let divCreate = document.createElement("div");
+
                     let formFC = document.getElementById("myForm");
                     let cln = formFC.cloneNode(true);
-                    cln.id ="formId"+dg2.name;    
+                    cln.id ="formId"+dg2.name;
                     cln.style.display = "block";
+
+
+                   {% comment %} var f = document.createElement("form");
+						f.method="POST";
+						f.id = "formID"+dg2.name;
+						f.name = "formID"+dg2.name;
+						var br = document.createElement("br");
+
+						f.setAttribute('method',"post");
+						f.id ="formId"+dg2.name;
+					{% endcomment %}	//create input element
+
+						{% comment %}var i1 =document.createElement("input");
+						document.body.appendChild(i1);
+						f.appendChild(i1);
+						i1.insertAdjacentHTML('beforebegin', "Item1: ");
+						i1.style.width="40%";
+						i1.style.height="5%";
+						i1.type = "text";
+						i1.name = "item1"+dg2.name;
+						i1.id = "item1"+dg2.name;
+
+						f.appendChild(br);
+						f.appendChild(br);
+						var i2 = document.createElement("input");
+						f.appendChild(i2);
+						i2.insertAdjacentHTML('beforebegin', "Item2: ");
+						i2.marginTop="10px";
+						i2.style.width="40%";
+						i2.style.height="5%";
+						i2.type = "text";
+						i2.name = "item2"+dg2.name;
+						i2.id = "item1"+dg2.name;
+
+						//create a button
+						var s = document.createElement("input");
+						s.style.marginTop="20px";
+						s.style.marginLeft="100px";
+						s.type = "reset";
+						s.style.display="block";
+						s.value = "reset";
+
+						var cIn = document.getElementById("cIn");
+						cIn.value = count;
+						console.log("CIN value:",cIn.value);
+
+						// add all elements to the form
+						//f.appendChild(i1);
+						//f.appendChild(i2);
+						f.appendChild(s);
+{% endcomment %}
                     divCreate.appendChild(cln);
                     dynDivForm.appendChild(divCreate);
                     getulTag.appendChild(dynDivForm);
@@ -200,36 +248,27 @@ input[type=submit]:hover {
                     arry1D[j][0] = "formId" + j;
 
                     console.log("---------------Form--------------------");
-                    for (i = 0; i < inputs.length; i++) {
+                    for (i =0; i < inputs.length; i++) {
                         if (inputs[i].nodeName === "INPUT" && inputs[i].type === "text") {
                             console.log("values of form:", inputs[i].value);
-                            arry1D[j][i + 1] = inputs[i].value;
+                            arry1D[j][i] = inputs[i].value;
                         }
                     }
-
-                    $.post({
-                        url: "",
-                        data: arry1D,
-                        headers: {
-                            'X-CSRFToken': csrftoken
-                        },
-                        success:function(result) {
-                            console.log(result);
-                        }
-                    });
-
                 }
-
-
-{% comment %}                $.ajax({
-                    url:'',
-                    type:'POST',
-                    data:arry1D,
-                    headers: { "X-CSRFToken": "{{ csrf_token }}" }, // for csrf token
-                    "success": function(result) {
-                        console.log(result);
-                    },
-                });{% endcomment %}
+                var tk = $(this).attr("data-token")
+                $.ajax({
+                    url: "{% url 'form_post' %}",
+                    type: "POST",
+                    data:
+                        {   'arry1D':JSON.stringify(arry1D),
+                            'count':count,
+                            'csrfmiddlewaretoken': tk},
+                    cache:false,
+                    dataType: "json",
+                    success: function(resp){
+                        alert ("resp: "+resp.arry1D);
+                    }
+                });
                 console.table(arry1D);
             }
 
@@ -242,7 +281,6 @@ input[type=submit]:hover {
 
             function ondrag(event) 
             {
-
             }
 
         	function dragEnd(event) {}
@@ -357,29 +395,28 @@ input[type=submit]:hover {
                  <div id = "addForm">
                  </div>
 
+                <form  id = "myForm" method="POST" style="list-style-type: none;display: none;" class="form_class">
                 {% csrf_token  %}
-                <form  id = "myForm" style="list-style-type: none;display: none;" class="form_class">
                     item1:
                     <input type="text" name="item1" style="width:10%;height:5%"> 
                     <br>
                     item2:
                     <input type="text" name="item2" style="width:10%;height: 5%">
                     <br>
-                    item2:
-                    <input type="text" name="item2" style="width:10%;height: 5%">
+                    item3:
+                    <input type="text" name="item3" style="width:10%;height: 5%">
                     <br>
-                    item2:
-                    <input type="text" name="item2" style="width:10%;height: 5%">
+                    item4:
+                    <input type="text" name="item4" style="width:10%;height: 5%">
                     <br>
-                    item2:
-                    <input type="text" name="item2" style="width:10%;height: 5%"> 
+                    item5:
+                    <input type="text" name="item5" style="width:10%;height: 5%">
                     
                     <br><br> 
                     <input id="close_form" type="reset" value="reset">
                 </form>      
 
             </div> 
-
             <!-- ----------------------------------------------------------------------------------------------------- -->
 
 
@@ -388,11 +425,11 @@ input[type=submit]:hover {
                     </div>
                     <ol class="breadcrumb mb-3">     
                         <li>
-                        <button class="bg-yellow text-white" >
-							
-                            <div class="card-body" type="button" onclick="sendValuesToBack()">Run
-                            </div>
-                        </button>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input class="bg-yellow text-white" value="RUN" name="runModel" type="submit" onclick="sendValuesToBack()">
+                                    <input id="cIn" value="" name="cin" type="hidden"/>
+                            </form>
                         </li>
 
                         <a href="#">
